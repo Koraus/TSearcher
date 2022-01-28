@@ -9,12 +9,12 @@
           <b-form-input
             v-model="searchInput"
             placeholder="Enter your request"
-            @keydown.enter="serarchRequest()"
+            @keydown.enter="serarchRequest(1)"
             class="m-1"
           >
           </b-form-input>
           <b-button
-            v-on:click.stop="serarchRequest()"
+            v-on:click.stop="serarchRequest(1)"
             variant="outline-primary"
             class="m-1"
             >Search
@@ -52,24 +52,29 @@
               <span v-if="item.package.date"> {{ item.package.date }} </span>
             </li>
           </ul>
-
         </div>
         <div v-if="searchResponse.total === 0">Нічого не знайдено</div>
 
-          <PopupWindow
-            v-if="selectedItem"
-            :selectedItem="selectedItem"
-            @close="selectedItem = undefined"
-            @click="log(this.selectedItem)"
-          />
-
+        <PopupWindow
+          v-if="selectedItem"
+          :selectedItem="selectedItem"
+          @close="selectedItem = undefined"
+          @click="log(this.selectedItem)"
+        />
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="searchResponse.total"
+          :per-page="searchResultsPerPage"
+          first-number
+          last-number
+          @page-click="(_0, page) => serarchRequest(page)"
+        ></b-pagination>
       </div>
     </b-container>
   </div>
 </template>
 
 <script>
-
 import PopupWindow from "./components/PopupWindow.vue";
 
 const apiUrl = "https://registry.npmjs.com/-/v1/";
@@ -84,31 +89,29 @@ export default {
       searchInput: "",
       selectedItem: undefined,
       searchResponse: undefined,
-      totalPages: undefined,
-      currentPage: 1,
-    
+      perPage: 1,
+      currentPage: undefined,
+      searchResultsPerPage: 10,
     };
   },
   computed: {
-    
   },
   methods: {
-    async serarchRequest() {
-      const qResultSize = 10;
-      let startFrom = 100;
+    async serarchRequest(page) {
+      const startFrom = (page - 1) * this.searchResultsPerPage;
+      const searchParams = new URLSearchParams({
+        text: this.searchInput,
+        size: this.searchResultsPerPage,
+        from: startFrom,
+      });
       this.searchResponse = await (
         await fetch(
-          `${apiUrl}search?text=${this.searchInput}&size=${qResultSize}&from=${startFrom}`
+          `${apiUrl}search?${searchParams.toString()}`
         )
       ).json();
-      this.totalPages = Math.ceil(this.searchResponse.total / qResultSize);
-      this.currentPage = Math.ceil(startFrom / qResultSize);
-      console.log(this.searchResponse);
-      console.log(this.totalPages);
-
     },
-    log(itm) {
-      console.log(itm);
+    log(...itm) {
+      console.log(...itm);
     },
   },
 };
