@@ -26,5 +26,6 @@ min-height: 5vh;
 background: rgb(215, 215, 245);
 position: fixed;
 bottom: 0;
+z-index: 11;
 }
 </style>

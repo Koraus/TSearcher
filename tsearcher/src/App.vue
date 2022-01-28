@@ -51,10 +51,10 @@
               <span class="card__list-title">date:</span>
               <span v-if="item.package.date"> {{ item.package.date }} </span>
             </li>
-            <li  class="list-group-item" style="color: royalblue">  click to read more  </li>
+           <li class="list-group-item">  <b-button  variant="outline-primary">  click to read more  </b-button> </li>
           </ul>
         </div>
-        <div v-if="searchResponse.total === 0">Нічого не знайдено</div>
+        <div v-if="searchResponse.total === 0"> Nothing was found</div>
 
         <PopupWindow
           v-if="selectedItem"
@@ -69,6 +69,7 @@
           first-number
           last-number
           @page-click="(_0, page) => serarchRequest(page)"
+          
         ></b-pagination>
       </div>
     </b-container>
@@ -113,6 +114,7 @@ export default {
           `${apiUrl}search?${searchParams.toString()}`
         )
       ).json();
+      this.scrollToTop()
     },
     log(...itm) {
       console.log(...itm);
@@ -120,6 +122,9 @@ export default {
     scrollHid(){
       document.body.classList.add('overflowHidden')
     },
+    scrollToTop() {
+    window.scrollTo(0,0);
+  }
 
     
   },
