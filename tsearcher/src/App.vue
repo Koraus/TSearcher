@@ -1,6 +1,6 @@
-<template>
-  <div id="app">
-    <b-container>
+<template >
+  <div id="app" >
+    <b-container  >
       <section class="search-section">
         <h1 class="search-section__title">Search</h1>
         <p class="search-section__paragraph">all what you need</p>
@@ -25,10 +25,10 @@
       <div v-if="searchResponse" class="search-section__search-result">
         <div
           class="card search-section__card"
-          style="width: 100%; max-width: 70rem"
+          style="width: 95%; max-width: 70rem"
           v-for="item in searchResponse.objects"
           :key="item.id"
-          @click="selectedItem = item"
+          @click="selectedItem = item, scrollHid()"
         >
           <div class="card-header">
             <h4>{{ item.package.name }}</h4>
@@ -47,10 +47,11 @@
                 {{ item.package.description }}
               </span>
             </li>
-            <li class="list-group-item">
+            <li class="list-group-item" >
               <span class="card__list-title">date:</span>
               <span v-if="item.package.date"> {{ item.package.date }} </span>
             </li>
+            <li  class="list-group-item" style="color: royalblue">  click to read more  </li>
           </ul>
         </div>
         <div v-if="searchResponse.total === 0">Нічого не знайдено</div>
@@ -71,18 +72,21 @@
         ></b-pagination>
       </div>
     </b-container>
+    <FooterSection/>
   </div>
+    
 </template>
 
 <script>
 import PopupWindow from "./components/PopupWindow.vue";
-
+import FooterSection from "./components/FooterSection.vue";
 const apiUrl = "https://registry.npmjs.com/-/v1/";
 
 export default {
   name: "App",
   components: {
     PopupWindow,
+    FooterSection,
   },
   data() {
     return {
@@ -113,6 +117,11 @@ export default {
     log(...itm) {
       console.log(...itm);
     },
+    scrollHid(){
+      document.body.classList.add('overflowHidden')
+    },
+
+    
   },
 };
 </script>
@@ -125,6 +134,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  padding-bottom: 5vh;
+
 }
 
 .search-section__search-lable {
@@ -162,4 +173,5 @@ export default {
   font-size: 14px;
   color: #2c3e50;
 }
+.overflowHidden {overflow: hidden;}
 </style>

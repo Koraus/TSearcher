@@ -1,8 +1,8 @@
 <template  >
-  <div class="bg-drop" @click.stop="close()">
-    <div
+  <div class="bg-drop" @click.stop="close()" >
+    <div 
       class="card text-white bg-light  base-info"
-      style="max-width: 60%"
+      style=" min-width:20rem"
       v-if="selectedItem"
     >
       <div class="card-header"><h3 class="card__title">About</h3></div>
@@ -21,15 +21,15 @@
         </ul>
       </div>
     </div>
-    <div class="card text-white bg-light base-info" style="max-width: 60%">
+    <div class="card text-white bg-light base-info" style=" min-width:20rem;  ">
       <div class="card-header"><h3 class="card__title"> More info about versions <span  v-if="packageInfo"> {{this.packageInfo.versions[0]}}  </span>  </h3></div>
       <div class="card-body text-success">
-        <p class="card-text" v-if="packageInfo"> </p>
-        <ul class="card__list">
+        <p class="card-text" v-if="packageInfo" > </p>
+        <ul class="card__list" style="overflow-y: auto">
           File list:
-        <li v-for="item in this.packageVersionInfo.files" :key="item.id"> {{item.name}} </li>
+        <li v-for="item in this.packageVersionInfo.files" :key="item.id" > {{item.name}} </li>
         </ul>
-        <h5 v-if="!packageInfo" class="card-title"> loading...</h5>
+        <h5 v-if="!packageInfo" class="card-title" > loading...</h5>
         
       </div>
     </div>
@@ -61,6 +61,9 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+
+      document.body.classList.remove('overflowHidden')
+
     },
     async getInfo() {
       this.packageInfo = await (
@@ -83,6 +86,7 @@ export default {
 
 <style >
 .bg-drop {
+  z-index: 10;
   background: rgba(0, 0, 0, 0.452);
   min-width: 100%;
   min-height: 100%;
@@ -94,7 +98,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40px;
+  padding-top: 20px;
+  overflow-y: auto;
 }
 .base-info {
   background: white;
@@ -123,4 +128,18 @@ export default {
 .card__title{
   color: royalblue
 }
+@media (max-width: 576px) { 
+  .card{
+    max-height: 40vh;
+    overflow: scroll;
+  }
+
+}
+  @media (max-width: 876px) { 
+  .card {
+    max-height: 44vh;
+    overflow: scroll;
+  }
+  }
+
 </style>
